@@ -40,7 +40,17 @@ namespace folderboard
             p.position = pos;
         }
 
-
+        public Part removePart(Position pos)
+        {
+            if (part(pos) == null)
+            {
+                return null;
+            }
+            Part aux = part(pos);
+            aux.position = null;
+            parts[pos.row, pos.column] = null;
+            return aux;
+        }
 
         public bool validPosition(Position pos)
         {

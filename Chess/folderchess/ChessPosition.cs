@@ -1,6 +1,4 @@
-﻿
-
-using folderboard;
+﻿using folderboard;
 
 namespace folderchess
 {

@@ -17,6 +17,10 @@ namespace folderboard
             this.board = board;
         }
 
+        public void increaseMoviment()
+        {
+            quantityMoves++;
+        }
 
     }
 }

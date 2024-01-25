@@ -1,5 +1,6 @@
 ﻿using folderboard;
 using folderchess;
+using System.Xml;
 
 namespace Chess
 {
@@ -11,14 +12,21 @@ namespace Chess
 
             try
             {
-                Board board = new Board(8, 8);
-                board.placePart(new Rook(board, Color.White), new Position(0, 0));
-                board.placePart(new King(board, Color.Black), new Position(0, 1));
+                ChessMatch match = new ChessMatch();
+                while (!match.finish)
+                {
 
-                board.placePart(new Rook(board, Color.White), new Position(7, 1));
-                board.placePart(new King(board, Color.Black), new Position(7, 0));
+                    Console.Clear();
+                    Screen.printBoard(match.board);
 
-                Screen.printBoard(board);
+                    Console.Write("Enther the origin: ");
+                    Position origin = Screen.readChessPosition().toPosition();
+
+                    Console.Write("Enter the destiny: ");
+                    Position destiny = Screen.readChessPosition().toPosition();
+
+                    match.executeMovement(origin, destiny);
+                }
             }
 
             catch (Exception ex) {
