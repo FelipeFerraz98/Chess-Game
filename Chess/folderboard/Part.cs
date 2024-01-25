@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 
 namespace folderboard
 {
@@ -10,7 +9,7 @@ namespace folderboard
         public int quantityMoves { get; protected set; }
         public Board board { get; protected set; }
 
-        public Part(Color color, Board board)
+        public Part(Board board, Color color)
         {
             this.position = null;
             this.color = color;

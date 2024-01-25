@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chess.folderboard
+namespace folderboard
 {
     enum Color
     {
