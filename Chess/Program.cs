@@ -22,6 +22,13 @@ namespace Chess
                     Console.Write("Enther the origin: ");
                     Position origin = Screen.readChessPosition().toPosition();
 
+                    bool[,] possiblesPositions = match.board.part(origin).possiblesMoviments();
+
+                    
+
+                    Console.Clear();
+                    Screen.printBoard(match.board, possiblesPositions);
+
                     Console.Write("Enter the destiny: ");
                     Position destiny = Screen.readChessPosition().toPosition();
 

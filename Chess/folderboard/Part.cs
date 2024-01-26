@@ -2,7 +2,7 @@
 
 namespace folderboard
 {
-    class Part
+    abstract class Part
     {
         public Position position { get; set; }
         public Color color { get; set; }
@@ -21,6 +21,8 @@ namespace folderboard
         {
             quantityMoves++;
         }
+
+        public abstract bool[,] possiblesMoviments();
 
     }
 }
