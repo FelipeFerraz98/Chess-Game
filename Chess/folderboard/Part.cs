@@ -22,6 +22,28 @@ namespace folderboard
             quantityMoves++;
         }
 
+        public bool thereArePossibleMovements()
+        {
+            bool[,] matrix = possiblesMoviments();
+            for (int i = 0; i < board.rows; i++)
+            {
+                for (int j = 0; j < board.columns; j++)
+                {
+                    if (matrix[i, j])
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public bool canMoveTo(Position pos)
+        {
+            return possiblesMoviments()[pos.row, pos.column];
+        }
+
+
         public abstract bool[,] possiblesMoviments();
 
     }
