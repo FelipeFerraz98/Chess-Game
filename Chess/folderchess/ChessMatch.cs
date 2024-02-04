@@ -11,6 +11,7 @@ namespace folderchess
         public bool finish { get; private set; }
         private HashSet<Part> parts;
         private HashSet<Part> captures;
+        public bool check { get; private set; }
 
         public ChessMatch()
         {
@@ -18,31 +19,65 @@ namespace folderchess
             turn = 1;
             currentPlayer = Color.White;
             finish = false;
+            check = false;
             parts = new HashSet<Part>();
             captures = new HashSet<Part>();
             placeParts();
         }
 
-        public void executeMovement(Position origin, Position destiny)
+        public Part executeMovement(Position origin, Position destiny)
         {
             Part p = board.removePart(origin);
             p.increaseMoviment();
-            Part capturePart = board.removePart(destiny);
+            Part capturedPart = board.removePart(destiny);
             board.placePart(p, destiny);
-            if (capturePart != null )
+            if (capturedPart != null)
             {
-                captures.Add(capturePart);
+                captures.Add(capturedPart);
             }
+
+            return capturedPart;
+        }
+
+        public void undoMovement(Position origin, Position destiny, Part capturedPart)
+        {
+            Part p = board.removePart(destiny);
+            p.decreaseMoviment();
+            if(capturedPart != null)
+            {
+                board.placePart(capturedPart, destiny);
+                captures.Remove(capturedPart);
+            }
+            board.placePart(p, origin);
+
         }
 
         public void makePlay(Position origin, Position destiny)
         {
-            executeMovement(origin, destiny);
+            Part capturedPart = executeMovement(origin, destiny);
+
+            if (inCheck(currentPlayer))
+            {
+                undoMovement(origin, destiny, capturedPart);
+                throw new BoardException("You can't put yourself in check!");
+            }
+
+            if (inCheck(opponent(currentPlayer)))
+            {
+                check = true;
+            }
+
+            else
+            {
+                check = false;
+            }
+
             turn++;
             changePlayer();
         }
-        public void vailidateOrigin(Position pos) {
-            if(board.part(pos) == null)
+        public void vailidateOrigin(Position pos)
+        {
+            if (board.part(pos) == null)
             {
                 throw new BoardException("There is no part in the choice of origin!");
             }
@@ -58,7 +93,8 @@ namespace folderchess
 
         public void validateDestiny(Position origin, Position destiny)
         {
-            if (!board.part(origin).canMoveTo(destiny)){
+            if (!board.part(origin).canMoveTo(destiny))
+            {
                 throw new BoardException("Destination position invalid!");
             }
         }
@@ -69,7 +105,8 @@ namespace folderchess
             {
                 currentPlayer = Color.Black;
             }
-            else{
+            else
+            {
                 currentPlayer = Color.White;
             }
         }
@@ -77,7 +114,8 @@ namespace folderchess
         public HashSet<Part> capturedParts(Color color)
         {
             HashSet<Part> aux = new HashSet<Part>();
-            foreach (Part x in captures) {
+            foreach (Part x in captures)
+            {
                 if (x.color == color)
                 { aux.Add(x); }
             }
@@ -86,8 +124,8 @@ namespace folderchess
 
         public HashSet<Part> partsInGame(Color color)
         {
-            HashSet <Part> aux = new HashSet<Part>();
-            foreach (Part x in captures)
+            HashSet<Part> aux = new HashSet<Part>();
+            foreach (Part x in parts)
             {
                 if (x.color == color)
                 {
@@ -98,9 +136,52 @@ namespace folderchess
             return aux;
         }
 
+        private Color opponent(Color color)
+        {
+            if (color == Color.White)
+            {
+                return Color.Black;
+            }
+
+            return Color.White;
+        }
+
+        private Part king(Color color)
+        {
+            foreach (Part x in partsInGame(color))
+            {
+                if (x is King)
+                {
+                    return x;
+                }
+            }
+            return null;
+        }
+
+        public bool inCheck(Color color)
+        {
+            Part Ki = king(color);
+            if (Ki == null)
+            {
+                throw new BoardException("Don't exist the king of color " + color + " in board!");
+            }
+
+            foreach (Part x in partsInGame(opponent(color)))
+            {
+                bool[,] matrix = x.possiblesMoviments();
+                if (matrix[Ki.position.row, Ki.position.column]) 
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void placeNewPart(char column, int row, Part part)
         {
             board.placePart(part, new ChessPosition(column, row).toPosition());
+            parts.Add(part);
         }
 
         public void placeParts()

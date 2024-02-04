@@ -22,6 +22,11 @@ namespace folderboard
             quantityMoves++;
         }
 
+        public void decreaseMoviment()
+        {
+            quantityMoves--;
+        }
+
         public bool thereArePossibleMovements()
         {
             bool[,] matrix = possiblesMoviments();
