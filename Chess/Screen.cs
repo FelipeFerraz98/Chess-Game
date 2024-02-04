@@ -1,11 +1,43 @@
 ﻿using folderboard;
 using folderchess;
-using System;
+using System.Collections.Generic;
 
 namespace Chess
 {
     class Screen
     {
+        public static void printMatch(ChessMatch match)
+        {
+            printBoard(match.board);
+            printCapturedParts(match);
+            Console.WriteLine();
+            Console.WriteLine("Turn: " + match.turn);
+            Console.WriteLine("Waiting play: " + match.currentPlayer);
+
+        }
+        public static void printCapturedParts(ChessMatch match) {
+            Console.WriteLine("Captured Parts: ");
+            Console.Write("White: ");
+            printConjunct(match.capturedParts(Color.White));
+            Console.WriteLine();
+            Console.Write("Black: ");
+            ConsoleColor aux = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            printConjunct(match.capturedParts(Color.Black));
+            Console.ForegroundColor= aux;
+
+        }
+
+        public static void printConjunct(HashSet<Part> conjunct)
+        {
+            Console.Write("[");
+            foreach (Part x in conjunct)
+            {
+                Console.Write(x + " ");
+            }
+            Console.Write("]");
+        }
+
         public static void printBoard(Board board)
         {
             for (int i = 0; i < board.rows; i++)
@@ -20,6 +52,7 @@ namespace Chess
             }
             Console.WriteLine("  a  b  c  d  e  f  g  h");
         }
+
 
         public static void printBoard(Board board, bool[,] possiblesPositions)
         {
