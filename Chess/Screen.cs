@@ -76,7 +76,7 @@ namespace Chess
 
             for (int i = 0; i < board.rows; i++)
             {
-                Console.Write(8 - i + " ");
+                Console.Write(8 - i + "");
                 for (int j = 0; j < board.columns; j++)
                 {
                     if (possiblesPositions[i, j])

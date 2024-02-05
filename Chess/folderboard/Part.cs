@@ -43,7 +43,7 @@ namespace folderboard
             return false;
         }
 
-        public bool canMoveTo(Position pos)
+        public bool possibleMoviment(Position pos)
         {
             return possiblesMoviments()[pos.row, pos.column];
         }
