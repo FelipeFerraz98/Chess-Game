@@ -12,14 +12,25 @@ namespace Chess
             printCapturedParts(match);
             Console.WriteLine();
             Console.WriteLine("Turn: " + match.turn);
-            Console.WriteLine("Waiting play: " + match.currentPlayer);
-            if (match.check)
+            if (!match.finish)
             {
-                Console.WriteLine("CHECK!");
+                Console.WriteLine("Waiting play: " + match.currentPlayer);
+                if (match.check)
+                {
+                    Console.WriteLine("CHECK!");
+                }
+
+            }
+
+            else
+            {
+                Console.WriteLine("CHECKMATE!");
+                Console.WriteLine("Winner: " + match.currentPlayer);
             }
 
         }
-        public static void printCapturedParts(ChessMatch match) {
+        public static void printCapturedParts(ChessMatch match)
+        {
             Console.WriteLine("Captured Parts: ");
             Console.Write("White: ");
             printConjunct(match.capturedParts(Color.White));
@@ -28,7 +39,7 @@ namespace Chess
             ConsoleColor aux = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             printConjunct(match.capturedParts(Color.Black));
-            Console.ForegroundColor= aux;
+            Console.ForegroundColor = aux;
 
         }
 

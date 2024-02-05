@@ -43,7 +43,7 @@ namespace folderchess
         {
             Part p = board.removePart(destiny);
             p.decreaseMoviment();
-            if(capturedPart != null)
+            if (capturedPart != null)
             {
                 board.placePart(capturedPart, destiny);
                 captures.Remove(capturedPart);
@@ -72,8 +72,16 @@ namespace folderchess
                 check = false;
             }
 
-            turn++;
-            changePlayer();
+            if (checkmateTest(currentPlayer))
+            {
+                finish = true;
+            }
+
+            else
+            {
+                turn++;
+                changePlayer();
+            }
         }
         public void vailidateOrigin(Position pos)
         {
@@ -169,13 +177,45 @@ namespace folderchess
             foreach (Part x in partsInGame(opponent(color)))
             {
                 bool[,] matrix = x.possiblesMoviments();
-                if (matrix[Ki.position.row, Ki.position.column]) 
+                if (matrix[Ki.position.row, Ki.position.column])
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        public bool checkmateTest(Color color)
+        {
+            if (!inCheck(color))
+            {
+                return false;
+            }
+
+            foreach (Part x in partsInGame(color))
+            {
+                bool[,] matrix = x.possiblesMoviments();
+                for (int i = 0; i < board.rows; i++)
+                {
+                    for (int j = 0; j < board.columns; j++)
+                    {
+                        if (matrix[i, j])
+                        {
+                            Position origin = x.position;
+                            Position destiny = new Position(i, j);
+                            Part capturedPart = executeMovement(origin, destiny);
+                            bool checkTest = inCheck(color);
+                            undoMovement(origin, destiny, capturedPart);
+                            if (!checkTest)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         public void placeNewPart(char column, int row, Part part)
