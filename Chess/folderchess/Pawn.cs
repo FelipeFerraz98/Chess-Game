@@ -4,9 +4,10 @@ namespace folderchess
 {
     class Pawn : Part
     {
-        public Pawn(Board board, Color color) : base(board, color)
+        private ChessMatch match;
+        public Pawn(Board board, Color color, ChessMatch match) : base(board, color)
         {
-
+            this.match = match;
         }
         public override string ToString()
         {
@@ -55,6 +56,22 @@ namespace folderchess
                 {
                     matrix[pos.row, pos.column] = true;
                 }
+                // #Especial play En Passant
+                if (position.row == 3)
+                {
+                    Position left = new Position(position.row, position.column - 1);
+                    if (board.validPosition(left) && existEnemy(left) && board.part(left) == match.enPassantVulnerable)
+                    {
+                        matrix[left.row - 1, left.column] = true;
+                    }
+
+                    Position right = new Position(position.row, position.column + 1);
+                    if (board.validPosition(right) && existEnemy(right) && board.part(right) == match.enPassantVulnerable)
+                    {
+                        matrix[right.row - 1, right.column] = true;
+                    }
+
+                }
             }
 
             else
@@ -82,6 +99,27 @@ namespace folderchess
                 {
                     matrix[pos.row, pos.column] = true;
                 }
+
+
+                // #Especial play En Passant
+
+                if (position.row == 4)
+                {
+                    Position left = new Position(position.row, position.column - 1);
+                    if (board.validPosition(left) && existEnemy(left) && board.part(left) == match.enPassantVulnerable)
+                    {
+                        matrix[left.row + 1, left.column] = true;
+                    }
+
+                    Position right = new Position(position.row, position.column + 1);
+                    if (board.validPosition(right) && existEnemy(right) && board.part(right) == match.enPassantVulnerable)
+                    {
+                        matrix[right.row + 1, right.column] = true;
+                    }
+
+                }
+
+
             }
 
             return matrix;

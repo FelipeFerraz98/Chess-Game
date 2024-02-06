@@ -12,6 +12,7 @@ namespace folderchess
         private HashSet<Part> parts;
         private HashSet<Part> captures;
         public bool check { get; private set; }
+        public Part enPassantVulnerable { get; private set; }
 
         public ChessMatch()
         {
@@ -20,6 +21,7 @@ namespace folderchess
             currentPlayer = Color.White;
             finish = false;
             check = false;
+            enPassantVulnerable = null;
             parts = new HashSet<Part>();
             captures = new HashSet<Part>();
             placeParts();
@@ -58,6 +60,25 @@ namespace folderchess
                 rook.increaseMoviment();
                 board.placePart(rook, destinyRook);
 
+            }
+
+            // #Especial play En Passant
+            if (p is Pawn)
+            {
+                if (origin.column != destiny.column && capturedPart == null)
+                {
+                    Position posPawn;
+                    if (p.color == Color.White)
+                    {
+                        posPawn = new Position(destiny.row + 1, destiny.column);
+                    }
+                    else
+                    {
+                        posPawn = new Position(destiny.row - 1, destiny.column);
+                    }
+                    capturedPart = board.removePart(posPawn);
+                    captures.Add(capturedPart);
+                }
             }
 
 
@@ -99,6 +120,25 @@ namespace folderchess
 
             }
 
+            // #Especial play En Passant - undo
+            if (p is Pawn)
+            {
+                if (origin.column != destiny.column && capturedPart == enPassantVulnerable)
+                {
+                    Part pawn = board.removePart(destiny);
+                    Position posPawn;
+                    if (p.color == Color.White)
+                    {
+                        posPawn = new Position(3,destiny.column);
+                    }
+                    else
+                    {
+                        posPawn = new Position(4, destiny.column);
+                    }
+                    board.placePart(pawn, posPawn);
+                }
+            }
+
         }
 
         public void makePlay(Position origin, Position destiny)
@@ -131,6 +171,20 @@ namespace folderchess
                 turn++;
                 changePlayer();
             }
+
+            Part p = board.part(destiny);
+
+            // #Especial play En Passant
+            if (p is Pawn && (destiny.row == origin.row + 2 || destiny.row == origin.row - 2))
+            {
+                enPassantVulnerable = p;
+            }
+
+            else
+            {
+                enPassantVulnerable = null;
+            }
+
         }
         public void vailidateOrigin(Position pos)
         {
@@ -276,14 +330,14 @@ namespace folderchess
         public void placeParts()
         {
             // White parts
-            placeNewPart('a', 2, new Pawn(board, Color.White));
-            placeNewPart('b', 2, new Pawn(board, Color.White));
-            placeNewPart('c', 2, new Pawn(board, Color.White));
-            placeNewPart('d', 2, new Pawn(board, Color.White));
-            placeNewPart('e', 2, new Pawn(board, Color.White));
-            placeNewPart('f', 2, new Pawn(board, Color.White));
-            placeNewPart('g', 2, new Pawn(board, Color.White));
-            placeNewPart('h', 2, new Rook(board, Color.White));
+            placeNewPart('a', 2, new Pawn(board, Color.White, this));
+            placeNewPart('b', 2, new Pawn(board, Color.White, this));
+            placeNewPart('c', 2, new Pawn(board, Color.White, this));
+            placeNewPart('d', 2, new Pawn(board, Color.White, this));
+            placeNewPart('e', 2, new Pawn(board, Color.White, this));
+            placeNewPart('f', 2, new Pawn(board, Color.White, this));
+            placeNewPart('g', 2, new Pawn(board, Color.White, this));
+            placeNewPart('h', 2, new Pawn(board, Color.White, this));
 
             placeNewPart('a', 1, new Rook(board, Color.White));
             placeNewPart('b', 1, new Knight(board, Color.White));
@@ -296,14 +350,14 @@ namespace folderchess
 
 
             // Black parts
-            placeNewPart('a', 7, new Pawn(board, Color.Black));
-            placeNewPart('b', 7, new Pawn(board, Color.Black));
-            placeNewPart('c', 7, new Pawn(board, Color.Black));
-            placeNewPart('d', 7, new Pawn(board, Color.Black));
-            placeNewPart('e', 7, new Pawn(board, Color.Black));
-            placeNewPart('f', 7, new Pawn(board, Color.Black));
-            placeNewPart('g', 7, new Pawn(board, Color.Black));
-            placeNewPart('h', 7, new Pawn(board, Color.Black));
+            placeNewPart('a', 7, new Pawn(board, Color.Black, this));
+            placeNewPart('b', 7, new Pawn(board, Color.Black, this));
+            placeNewPart('c', 7, new Pawn(board, Color.Black, this));
+            placeNewPart('d', 7, new Pawn(board, Color.Black, this));
+            placeNewPart('e', 7, new Pawn(board, Color.Black, this));
+            placeNewPart('f', 7, new Pawn(board, Color.Black, this));
+            placeNewPart('g', 7, new Pawn(board, Color.Black, this));
+            placeNewPart('h', 7, new Pawn(board, Color.Black, this));
 
 
             placeNewPart('a', 8, new Rook(board, Color.Black));
