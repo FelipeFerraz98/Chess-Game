@@ -36,6 +36,31 @@ namespace folderchess
                 captures.Add(capturedPart);
             }
 
+            // #Especial play small castling
+            if (p is King && destiny.column == origin.column + 2)
+            {
+                Position originRook = new Position(origin.row, origin.column + 3);
+                Position destinyRook = new Position(origin.row, origin.column + 1);
+
+                Part rook = board.removePart(originRook);
+                rook.increaseMoviment();
+                board.placePart(rook, destinyRook);
+
+            }
+
+            // #Especial play big castling
+            if (p is King && destiny.column == origin.column - 2)
+            {
+                Position originRook = new Position(origin.row, origin.column - 4);
+                Position destinyRook = new Position(origin.row, origin.column - 1);
+
+                Part rook = board.removePart(originRook);
+                rook.increaseMoviment();
+                board.placePart(rook, destinyRook);
+
+            }
+
+
             return capturedPart;
         }
 
@@ -49,6 +74,30 @@ namespace folderchess
                 captures.Remove(capturedPart);
             }
             board.placePart(p, origin);
+
+            // #Especial play small castling - undo
+            if (p is King && destiny.column == origin.column + 2)
+            {
+                Position originRook = new Position(origin.row, origin.column + 3);
+                Position destinyRook = new Position(origin.row, origin.column + 1);
+
+                Part rook = board.removePart(destinyRook);
+                rook.decreaseMoviment();
+                board.placePart(rook, originRook);
+
+            }
+
+            // #Especial play big castling - undo
+            if (p is King && destiny.column == origin.column - 2)
+            {
+                Position originRook = new Position(origin.row, origin.column - 4);
+                Position destinyRook = new Position(origin.row, origin.column - 1);
+
+                Part rook = board.removePart(destinyRook);
+                rook.decreaseMoviment();
+                board.placePart(rook, originRook);
+
+            }
 
         }
 
@@ -235,12 +284,12 @@ namespace folderchess
             placeNewPart('f', 2, new Pawn(board, Color.White));
             placeNewPart('g', 2, new Pawn(board, Color.White));
             placeNewPart('h', 2, new Rook(board, Color.White));
-            
+
             placeNewPart('a', 1, new Rook(board, Color.White));
             placeNewPart('b', 1, new Knight(board, Color.White));
             placeNewPart('c', 1, new Bishop(board, Color.White));
             placeNewPart('d', 1, new Queen(board, Color.White));
-            placeNewPart('e', 1, new King(board, Color.White));
+            placeNewPart('e', 1, new King(board, Color.White, this));
             placeNewPart('f', 1, new Bishop(board, Color.White));
             placeNewPart('g', 1, new Knight(board, Color.White));
             placeNewPart('h', 1, new Rook(board, Color.White));
@@ -261,7 +310,7 @@ namespace folderchess
             placeNewPart('b', 8, new Knight(board, Color.Black));
             placeNewPart('c', 8, new Bishop(board, Color.Black));
             placeNewPart('d', 8, new Queen(board, Color.Black));
-            placeNewPart('e', 8, new Knight(board, Color.Black));
+            placeNewPart('e', 8, new King(board, Color.Black, this));
             placeNewPart('f', 8, new Bishop(board, Color.Black));
             placeNewPart('g', 8, new Knight(board, Color.Black));
             placeNewPart('h', 8, new Rook(board, Color.Black));

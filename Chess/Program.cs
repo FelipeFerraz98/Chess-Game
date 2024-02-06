@@ -18,7 +18,7 @@ namespace Chess
                     Console.Clear();
                     Screen.printMatch(match);
 
-                    Console.Write("Enther the origin: ");
+                    Console.Write("Enter the origin: ");
                     Position origin = Screen.readChessPosition().toPosition();
                     match.vailidateOrigin(origin);
 
